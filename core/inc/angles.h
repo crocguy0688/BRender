@@ -9,22 +9,23 @@
 #define _ANGLES_H_
 
 /*
- * Angles are always 0.16 fixed point
+ * Angles are in turns, i.e. [0, 1],
  */
-typedef br_fixed_luf br_angle;
+typedef br_scalar br_angle;
 
-#define BR_ANGLE_DEG(deg)   ((br_angle)(long)((deg)*182))
-#define BR_ANGLE_RAD(rad)   ((br_angle)(long)((rad)*10430))
+#define BR_ANGLE_DEG(deg)   ((br_angle)((deg) / 360.0f))
+#define BR_ANGLE_RAD(rad)   ((br_angle)((rad) / (2.0f * PI)))
 
-#define BrAngleToDegree(a)  ((br_scalar)((a) * (180.0 / 32768.0)))
-#define BrDegreeToAngle(d)  ((br_angle)(long)((d) * (32768.0 / 180.0)))
-#define BrAngleToRadian(a)  ((br_scalar)((a) * (PI / 32768.0)))
-#define BrRadianToAngle(r)  ((br_angle)(long)((r) * (32768.0 / PI)))
+#define BrAngleToDegree(a)  ((br_scalar)((a) * 360.0))
+#define BrDegreeToAngle(d)  ((br_angle)((d) / 360.0))
+#define BrAngleToRadian(a)  ((br_scalar)((a) * (2.0 * PI)))
+#define BrRadianToAngle(r)  ((br_angle)((r) / (2.0 * PI)))
 #define BrDegreeToRadian(d) ((br_scalar)((d) * (PI / 180.0)))
 #define BrRadianToDegree(r) ((br_scalar)((r) * (180.0 / PI)))
 
-#define BrAngleToScalar(a)  ((br_scalar)((a) * (1.0 / (float)BR_ONE_LS)))
-#define BrScalarToAngle(s)  ((br_angle)(long)((s) * (float)BR_ONE_LS))
+#define BrAngleToScalar(a)  (a)
+#define BrScalarToAngle(s)  (s)
+
 
 #define BR_SIN(a)           ((br_scalar)sinf(BrAngleToRadian(a)))
 #define BR_COS(a)           ((br_scalar)cosf(BrAngleToRadian(a)))
