@@ -102,10 +102,20 @@ close(STDOUT);
 #
 open(STDOUT,">pretok.c");
 
+# Special-case - the NULL token.
+#
+printf("\t[%-32s] = { .node = {0,}, .identifier = %-32s, .type = %-24s, .token = %-32s, .base_length = %8d},\n",
+		"BR_NULL_TOKEN",
+		"NULL",
+		"BR_NULL_TOKEN",
+		"BR_NULL_TOKEN",
+		0);
+
 foreach $t (sort(keys %token_val)) {
 	$len = length($t) - length($type_ext{$token_val{$t}});
 
-	printf("\t{ .node = {0,}, .identifier = %-32s, .type = %-24s, .token = %-32s, .base_length = %8d},\n",
+	printf("\t[%-32s] = { .node = {0,}, .identifier = %-32s, .type = %-24s, .token = %-32s, .base_length = %8d},\n",
+		"$token_prefix$t",
 		"\"$t\"",
 		"$token_prefix$type_tok{$token_val{$t}}",
 		"$token_prefix$t",

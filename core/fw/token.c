@@ -46,22 +46,49 @@ static struct token_type tokenTypes[] = {
 };
 
 /*
+ * Helper to make finding predefined tokens faster.
+ */
+static const br_token_entry *TokenEntryFind(br_token t)
+{
+    const br_token_entry *te;
+
+    /*
+     * We're predefined, get directly.
+     */
+    if(t < BR_ASIZE(predefinedTokens))
+        return predefinedTokens + t;
+
+    /*
+     * We're custom, iterate backwards until either
+     * we find it or hit our last predefined.
+     */
+    BR_FOR_LIST_R(&fw.tokens, te) {
+        if(te->token == NEXT_FREE_TOKEN-1)
+            break;
+
+        if(te->token == t)
+            return te;
+    }
+
+    return predefinedTokens + BR_NULL_TOKEN;
+}
+
+/*
  * Initialise the token list
  */
 void BrTokenBegin(void)
 {
-    int i;
-
     /*
      * Set up token list
      */
     BrNewList(&fw.tokens);
 
     /*
-     * Add all the predefined tokens
+     * Add all the predefined tokens (except the NULL one).
+     * Iterating through these using BR_FOR_LIST() should yield ascending order.
      */
-    for(i = 0; i < BR_ASIZE(predefinedTokens); i++)
-        BR_ADDHEAD(&fw.tokens, predefinedTokens + i);
+    for(br_size_t i = 1; i < BR_ASIZE(predefinedTokens); i++)
+        BR_ADDTAIL(&fw.tokens, predefinedTokens + i);
 
     /*
      * Setup next unused token id
@@ -80,9 +107,10 @@ br_token BR_RESIDENT_ENTRY BrTokenCreate(const char *identifier, br_token type)
     l = BrStrLen(identifier);
 
     /*
-     * See if name already exists, if so, return that
+     * See if name already exists, if so, return that.
+     * Iterate in reverse to check custom tokens first.
      */
-    BR_FOR_LIST(&fw.tokens, te)
+    BR_FOR_LIST_R(&fw.tokens, te)
         if(!BrStrCmp(identifier, te->identifier))
             return te->token;
 
@@ -136,7 +164,7 @@ br_token BR_RESIDENT_ENTRY BrTokenCreate(const char *identifier, br_token type)
     te->type        = type;
     te->token       = fw.next_free_token++;
 
-    BR_ADDHEAD(&fw.tokens, te);
+    BR_ADDTAIL(&fw.tokens, te);
 
     return te->token;
 }
@@ -146,13 +174,7 @@ br_token BR_RESIDENT_ENTRY BrTokenCreate(const char *identifier, br_token type)
  */
 char *BR_RESIDENT_ENTRY BrTokenIdentifier(br_token t)
 {
-    br_token_entry *te;
-
-    BR_FOR_LIST(&fw.tokens, te)
-        if(t == te->token)
-            return te->identifier;
-
-    return NULL;
+    return TokenEntryFind(t)->identifier;
 }
 
 /*
@@ -160,13 +182,7 @@ char *BR_RESIDENT_ENTRY BrTokenIdentifier(br_token t)
  */
 br_token BR_RESIDENT_ENTRY BrTokenType(br_token t)
 {
-    br_token_entry *te;
-
-    BR_FOR_LIST(&fw.tokens, te)
-        if(t == te->token)
-            return te->type;
-
-    return BR_NULL_TOKEN;
+    return TokenEntryFind(t)->type;
 }
 
 /*
