@@ -5,11 +5,21 @@
 
 #include "brdemo.h"
 
+#define USE_SOFT 0
+
 /* begin hook */
 void _BrBeginHook(void) // NOLINT(*-reserved-identifier)
 {
     BrDevAddStatic(NULL, BrDrv1SDL2Begin, NULL);
     BrDevAddStatic(NULL, BrDrv1GLBegin, NULL);
+
+#if USE_SOFT
+    struct br_device *BR_EXPORT BrDrv1SoftPrimBegin(const char *arguments);
+    struct br_device *BR_EXPORT BrDrv1SoftRendBegin(const char *arguments);
+
+    BrDevAddStatic(NULL, BrDrv1SoftPrimBegin, NULL);
+    BrDevAddStatic(NULL, BrDrv1SoftRendBegin, NULL);
+#endif
 }
 
 /* end hook */
@@ -88,6 +98,7 @@ static br_pixelmap *BR_CALLBACK MapFindFailedLoadDeCLUT(const char *name)
         if(pm->type == BR_PMT_INDEX_8 && pm->map == NULL)
             pm->map = palette;
 
+#if !USE_SOFT
         if((pm2 = BrPixelmapDeCLUT(pm)) != NULL) {
             if(pm->map != palette)
                 BrResFree(pm->map);
@@ -100,6 +111,7 @@ static br_pixelmap *BR_CALLBACK MapFindFailedLoadDeCLUT(const char *name)
             BrResFree(pm->identifier);
 
         pm->identifier = BrResStrDup(pm, name);
+#endif
         BrMapAdd(pm);
     }
 
@@ -141,11 +153,13 @@ int BrDemoRun(const char *title, br_uint_16 width, br_uint_16 height, const br_d
     err = BrDevBeginVar(&demo->_screen, "SDL2",
                         BRT_WIDTH_I32,        width,
                         BRT_HEIGHT_I32,       height,
-                        BRT_PIXEL_TYPE_U8,    BR_PMT_RGB_888,
                         BRT_WINDOW_NAME_CSTR, title,
                         BRT_HIDPI_B,          BR_TRUE,
+#if !USE_SOFT
+                        BRT_PIXEL_TYPE_U8,    BR_PMT_RGB_888,
                         BRT_RESIZABLE_B,      BR_TRUE,
                         BRT_OPENGL_B,         BR_TRUE,
+#endif
                         BR_NULL_TOKEN);
     // clang-format on
     if(err != BRE_OK) {
