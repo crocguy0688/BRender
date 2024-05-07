@@ -24,6 +24,11 @@ extern "C" {
 #define BR_GEOMETRY_PRIMITIVES_PRIVATE
 #define BR_GEOMETRY_LIGHTING_PRIVATE
 
+#ifndef BR_SOFT_ENABLE_SUBDIVISION
+#define BR_SOFT_ENABLE_SUBDIVISION 0
+#endif
+
+
 #ifndef _BRDDI_H_
 #include "brddi.h"
 #endif

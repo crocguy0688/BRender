@@ -674,6 +674,7 @@ static void GEOMETRY_CALL V1Faces_GeometryFnsUpdate(struct br_geometry *self, st
 		} else
 		   PrimBlockAdd(renderer, (brp_render_fn *)OpTriangleClip);
 
+#if BR_SOFT_ENABLE_SUBDIVISION
         /*
          * Optional subdivision if the primitive requests it
          */
@@ -682,6 +683,7 @@ static void GEOMETRY_CALL V1Faces_GeometryFnsUpdate(struct br_geometry *self, st
 	    	PrimBlockOnScreenAdd(renderer, (brp_render_fn *)OpTriangleSubdivideOnScreen);
 			SubdivideSetThreshold(rend.block->subdivide_tolerance);
         }
+#endif
 		break;
 	}
 

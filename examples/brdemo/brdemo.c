@@ -10,6 +10,9 @@ void _BrBeginHook(void) // NOLINT(*-reserved-identifier)
 {
     BrDevAddStatic(NULL, BrDrv1SDL2Begin, NULL);
     BrDevAddStatic(NULL, BrDrv1GLBegin, NULL);
+
+    struct br_device *BR_EXPORT BrDrv1SoftRendBegin(const char *arguments);
+    BrDevAddStatic(NULL, BrDrv1SoftRendBegin, NULL);
 }
 
 /* end hook */

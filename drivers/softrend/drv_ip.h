@@ -336,6 +336,7 @@ void BR_ASM_CALL OpTriangleToPoints_OS(struct brp_block *block, brp_vertex *v0, 
 	br_uint_16 (*fp_vertices)[3]);
 void BR_ASM_CALL OpLineClip(struct brp_block *block, brp_vertex *v0, brp_vertex *v1);
 
+#if BR_SOFT_ENABLE_SUBDIVISION
 void BR_ASM_CALL OpTriangleSubdivide(struct brp_block *block, brp_vertex *v0, brp_vertex *v1, brp_vertex *v2,
 	br_uint_16 (*fp_vertices)[3], br_uint_16 (*fp_edges)[3], br_vector4 *fp_eqn, struct temp_face *tfp);
 
@@ -343,6 +344,7 @@ void BR_ASM_CALL OpTriangleSubdivideOnScreen(struct brp_block *block, brp_vertex
 	br_uint_16 (*fp_vertices)[3], br_uint_16 (*fp_edges)[3], br_vector4 *fp_eqn, struct temp_face *tfp);
 
 void SubdivideSetThreshold(br_int_32 subdivide_tolerance);
+#endif
 
 /*
  * heap.c
