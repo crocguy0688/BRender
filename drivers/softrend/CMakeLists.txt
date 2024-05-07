@@ -58,11 +58,15 @@ add_library(softrend
         template.h
         timestmp.h
         zsrmacro.h
-
-        "${CMAKE_CURRENT_BINARY_DIR}/drv.inc"
-
-        ${ASM_FILES}
 )
+
+if(WIN32 AND MSVC AND (CMAKE_GENERATOR_PLATFORM STREQUAL "Win32"))
+        target_sources(softrend PRIVATE
+                "${CMAKE_CURRENT_BINARY_DIR}/drv.inc"
+                 ${ASM_FILES}
+        )
+        target_compile_definitions(softrend PRIVATE BR_SOFT_ENABLE_SUBDIVISION=1)
+endif()
 
 get_target_property(target_type softrend TYPE)
 if(target_type STREQUAL SHARED_LIBRARY)

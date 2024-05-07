@@ -59,7 +59,7 @@ full_cleanup:
         *colour_buffer = NULL;
     }
 
-    if((tmp = BrPixelmapMatchTyped(screen, BR_PMMATCH_OFFSCREEN, BR_PMT_RGB_888)) == NULL)
+    if((tmp = BrPixelmapMatchTyped(screen, BR_PMMATCH_OFFSCREEN, BR_PMT_RGB_565)) == NULL)
         return BRE_FAIL;
 
     *colour_buffer = tmp;

@@ -386,7 +386,7 @@ static br_boolean subdivideCheck(brp_vertex *v0, brp_vertex *v1, brp_vertex *v2)
     }
 #endif
 
-#if 1
+#if 0
     br_scalar z0,z1,z2,zt;
 
     /*

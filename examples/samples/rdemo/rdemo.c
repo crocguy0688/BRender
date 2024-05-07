@@ -21,7 +21,8 @@ static br_material *CreateMaterial(const char *identifier)
     mat->ks      = BR_UFRACTION(0.50);
     mat->power   = BR_SCALAR(20);
 
-    mat->flags         = BR_MATF_GOURAUD | BR_MATF_LIGHT | BR_MATF_DISABLE_COLOUR_KEY;
+    mat->flags         = BR_MATF_GOURAUD | BR_MATF_LIGHT | BR_MATF_DISABLE_COLOUR_KEY | BR_MATF_SUBDIVIDE;
+    mat->subdivide_tolerance = 1;
     mat->map_transform = (br_matrix23){
         {BR_VECTOR2(1, 0), BR_VECTOR2(0, 1), BR_VECTOR2(0, 0)}
     };
@@ -123,9 +124,10 @@ br_error ReflectionInit(br_demo *demo)
      * Complete definition of mirror texture. Note that the colour_map
      * is a newly allocated pixelmap into which we'll render later.
      */
-    ref->mirror_pm = BrPixelmapMatchTypedSized(demo->colour_buffer, BR_PMMATCH_OFFSCREEN, demo->colour_buffer->type, 256, 256);
+    ref->mirror_pm = BrPixelmapMatchTypedSized(demo->colour_buffer, BR_PMMATCH_OFFSCREEN, BR_PMT_INDEX_8, 256, 256);
     ref->mirror_pm->origin_x = (br_int_16)(ref->mirror_pm->width >> 1);
     ref->mirror_pm->origin_y = (br_int_16)(ref->mirror_pm->height >> 1);
+    ref->mirror_pm->map      = demo->palette;
     BrMapAdd(ref->mirror_pm);
 
     /*
